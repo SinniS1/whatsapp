@@ -1,37 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "./SidebarChat.css";
+import { Link } from "react-router-dom";
 
 import { Avatar } from "@mui/material";
+import db from "../../../firebaseConfig";
 
-const SidebarChat = ({ addNewChat }) => {
-  const randomString = Math.random().toString(36).substring(2, 7);
-  const [seed, setSeed] = useState("j");
-
-  useEffect(() => {
-    setSeed(randomString);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const createChat = ()=>{
-    const roomName = prompt("Enter your name here. . .")
-    if(roomName){
+const SidebarChat = ({ addNewChat, name, id }) => {
+  const createChat = () => {
+    const roomName = prompt("Enter your name here. . .");
+    if (roomName) {
       // do some clever database stuff here
+      db.collection("rooms").add({
+        name: roomName,
+      });
+    } else {
+      alert("don't exploit this application ok..");
     }
-    else{
-      alert("don't exploit this application ok..")
-    }
-  }
+  };
 
-
-  
   return !addNewChat ? (
-    <div className="sidebarChat">
-      <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
-      <div className="sidebarChat_info">
-        <h2>Room name</h2>
-        <p>Last message ....</p>
+    <Link to={`/rooms/${id}`}>
+      <div className="sidebarChat">
+        <Avatar src={`https://avatars.dicebear.com/api/human/${name}.svg`} />
+        <div className="sidebarChat_info">
+          <h2>{name}</h2>
+          <p>Last message ....</p>
+        </div>
       </div>
-    </div>
+    </Link>
   ) : (
     <div onClick={createChat} className="sidebarChat">
       <h2>Add new chat</h2>

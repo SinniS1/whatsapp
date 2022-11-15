@@ -1,34 +1,38 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import "./Chat.css";
 
-import { Avatar, Icon, IconButton } from "@mui/material";
+import { Avatar, IconButton } from "@mui/material";
 import Search from "@mui/icons-material/SearchOutlined";
 import Menu from "@mui/icons-material/MoreVert";
 import File from "@mui/icons-material/AttachFile";
 import Smily from "@mui/icons-material/EmojiEmotionsOutlined";
 import Mike from "@mui/icons-material/KeyboardVoice";
 import Send from "@mui/icons-material/Send";
+import db from "../../firebaseConfig";
 
 function Chat() {
-  const [seed, setSeed] = useState("j");
-  useEffect(() => {
-    setSeed(Math.random() * 5000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  const { roomId } = useParams();
+  const [input, setInput] = useState("");
   const sendMessage = () => {
     console.log(input);
+    setInput("");
   };
 
-  const [input, setInput] = useState("");
+  const [roomName, setRoomName] = useState("");
+  useEffect(() => {
+    db.collection("rooms")
+      .doc(roomId)
+      .onSnapshot((snapshot) => setRoomName(snapshot.data().name));
+  }, [roomId]);
 
   return (
     <div className="chat">
       <div className="chat_header">
-        <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
+        <Avatar src={`https://avatars.dicebear.com/api/human/${roomName}.svg`} />
         <div className="chat_headerInfo">
-          <h3>Room name</h3>
+          <h3>{roomName}</h3>
           <p>Last seen at ...</p>
         </div>
         <div className="chat_headerRight">
