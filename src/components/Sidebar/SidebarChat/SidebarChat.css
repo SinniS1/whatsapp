@@ -1,28 +1,39 @@
 .sidebarChat {
     /* border: 1px solid red; */
-    background-color: #fefefe;
+    background-color: var(--bgClr);
     padding: 20px;
     display: flex;
     align-items: center;
     cursor: pointer;
-    border-bottom: 1px solid var(--bgClr);
+    border-bottom: 1px solid var(--light);
     border-radius: 12px;
+    color: white;
 }
 
 .sidebarChat:hover {
-    background-color: rgb(246, 246, 246);
+    background-color: var(--light);
 }
 
 .sidebarChat:active {
-    background-color: var(--bgClr);
-
+    background-color: var(--darkBg);
 }
+
 
 .sidebarChat_info>h2 {
     font-size: 16px;
     margin-bottom: 8px;
 }
 
-.sidebarChat_info{
+.sidebarChat_info {
     margin-left: 20px;
+}
+
+.link {
+    text-decoration: none;
+    color: black;
+}
+
+.lastMsg {
+    font-size: 13px;
+    color: gray;
 }

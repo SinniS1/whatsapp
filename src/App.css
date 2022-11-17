@@ -1,19 +1,19 @@
 :root {
-    --app: #dadbd3;
-    --bgClr: #ededed;
-    --light: #f6f4f4;
+    --bgClr: #111b21;
+    --light: #202c33;
+    --darkBg: #0c1115;
 }
 
 .app {
     display: grid;
     place-items: center;
-    background-color: var(--app);
+    background-color: var(--darkBg);
     height: 100vh;
 }
 
 .app__body {
     display: flex;
-    background-color: var(--bgClr);
+    background-color: var(--light);
     /* margin-top: -50px; */
     height: 95vh;
     width: 95vw;

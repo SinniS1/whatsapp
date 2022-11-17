@@ -11,20 +11,40 @@ import Smily from "@mui/icons-material/EmojiEmotionsOutlined";
 import Mike from "@mui/icons-material/KeyboardVoice";
 import Send from "@mui/icons-material/Send";
 import db from "../../firebaseConfig";
+import firebase from "firebase/compat/app";
+import { useStateValue } from "../../StateProvider";
 
 function Chat() {
   const { roomId } = useParams();
   const [input, setInput] = useState("");
-  const sendMessage = () => {
-    console.log(input);
+  const sendMessage = (e) => {
+    e.preventDefault();
+    db.collection("rooms").doc(roomId).collection("messages").add({
+      message: input, // -> from input field
+      name: user.displayName, // -> from google auth
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(), // from firebase server
+    });
     setInput("");
   };
 
   const [roomName, setRoomName] = useState("");
+  const [messages, setMessages] = useState([]);
+  // eslint-disable-next-line
+  const [{ user }, dispatch] = useStateValue();
   useEffect(() => {
-    db.collection("rooms")
-      .doc(roomId)
-      .onSnapshot((snapshot) => setRoomName(snapshot.data().name));
+    if (roomId) {
+      db.collection("rooms")
+        .doc(roomId)
+        .onSnapshot((snapshot) => setRoomName(snapshot.data().name));
+
+      db.collection("rooms")
+        .doc(roomId)
+        .collection("messages")
+        .orderBy("timestamp", "asc")
+        .onSnapshot((snapshot) => {
+          setMessages(snapshot.docs.map((doc) => doc.data()));
+        });
+    }
   }, [roomId]);
 
   return (
@@ -33,57 +53,49 @@ function Chat() {
         <Avatar src={`https://avatars.dicebear.com/api/human/${roomName}.svg`} />
         <div className="chat_headerInfo">
           <h3>{roomName}</h3>
-          <p>Last seen at ...</p>
+          <p>
+            Last seen at ...
+            {new Date(new Date(messages[messages.length - 1]?.timestamp?.toDate()).toUTCString()).toLocaleString(undefined, {
+              timeZone: "Asia/Kolkata",
+            })}
+          </p>
         </div>
         <div className="chat_headerRight">
           <IconButton>
-            <Search />
+            <Search sx={{ color: "white" }} />
           </IconButton>
           <IconButton>
-            <File />
+            <File sx={{ color: "white" }} />
           </IconButton>
           <IconButton>
-            <Menu />
+            <Menu sx={{ color: "white" }} />
           </IconButton>
         </div>
       </div>
 
       {/* Chat body */}
+
       <div className="chat_body">
-        <div className={`chat_message ${false && "chat_receiver"}`}>
-          {/* Chat name */}
-          <div className="chat_name">Sender's Name </div>
-
-          {/* chat messages */}
-          {`Sender's message should apper here...`}
-
-          <div style={{ width: "45px", height: "1px", marginRight: "0px" }}></div>
-
-          {/* Chat time */}
-          <span className="chat_messageTime">12:36 am</span>
-        </div>
-
-        {/* new message ----------------------------------------------------------------- */}
-
-        <div className={`chat_message ${true && "chat_receiver"}`}>
-          <div className="chat_name">You</div>
-
-          {/* chat messages */}
-          {`Receiver's messages should appear here...`}
-
-          <div style={{ width: "45px", height: "1px", marginRight: "0px" }}></div>
-          {/* Chat time */}
-          <span className="chat_messageTime">12:36 am</span>
-        </div>
+        {messages.map((message) => (
+          <div key={Math.random() * 50000000000} className={`chat_message ${message.name === user.displayName && "chat_receiver"}`}>
+            <div className="chat_name">{message.name}</div>
+            <div className="msg">{message.message}</div>
+            <div className="time">
+              <span className="chat_messageTime">
+                {new Date(new Date(message.timestamp?.toDate()).toUTCString()).toLocaleString(undefined, { timeZone: "Asia/Kolkata" })}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Chat Footer */}
       <div className="chat_footer">
         <IconButton>
-          <Smily />
+          <Smily sx={{ color: "white" }} />
         </IconButton>
         <IconButton>
-          <File className="file" />
+          <File className="file" sx={{ color: "white" }} />
         </IconButton>
 
         <form className="form">
@@ -93,7 +105,7 @@ function Chat() {
           </button>
         </form>
         <IconButton>
-          <Mike />
+          <Mike sx={{ color: "white" }} />
         </IconButton>
       </div>
     </div>

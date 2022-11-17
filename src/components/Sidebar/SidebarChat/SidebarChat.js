@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SidebarChat.css";
 import { Link } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
 
 import { Avatar } from "@mui/material";
 import db from "../../../firebaseConfig";
 
 const SidebarChat = ({ addNewChat, name, id }) => {
+
   const createChat = () => {
     const roomName = prompt("Enter your name here. . .");
     if (roomName) {
@@ -18,19 +20,33 @@ const SidebarChat = ({ addNewChat, name, id }) => {
     }
   };
 
+  const [lastMsg, setLastMsg] = useState("");
+  useEffect(() => {
+    if (id) {
+      db.collection("rooms")
+        .doc(id)
+        .collection("messages")
+        .orderBy("timestamp", "desc")
+        .onSnapshot((snapshot) => {
+          setLastMsg(snapshot.docs.map((doc) => doc.data()));
+        });
+    }
+  }, [id]);
+
   return !addNewChat ? (
-    <Link to={`/rooms/${id}`}>
+    <Link className="link" to={`/rooms/${id}`}>
       <div className="sidebarChat">
         <Avatar src={`https://avatars.dicebear.com/api/human/${name}.svg`} />
         <div className="sidebarChat_info">
           <h2>{name}</h2>
-          <p>Last message ....</p>
+          <p className="lastMsg">{lastMsg[0]?.message}</p>
         </div>
       </div>
     </Link>
   ) : (
     <div onClick={createChat} className="sidebarChat">
-      <h2>Add new chat</h2>
+      <h2>Create New Room</h2>
+      <AddIcon fontSize="large" />
     </div>
   );
 };

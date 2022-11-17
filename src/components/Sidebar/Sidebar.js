@@ -7,10 +7,13 @@ import Chats from "@mui/icons-material/Chat";
 import Menu from "@mui/icons-material/MoreVert";
 import Search from "@mui/icons-material/SearchOutlined";
 import SidebarChat from "./SidebarChat/SidebarChat.js";
+import { useStateValue } from "../../StateProvider";
 
 const Sidebar = () => {
   const [rooms, setRooms] = useState([]);
-  
+  // eslint-disable-next-line
+  const [{ user }, dispatch] = useStateValue();
+
   const fetchData = async () => {
     const response = db.collection("rooms");
     const data = await response.get();
@@ -29,16 +32,17 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="sidebar__header">
-        <Avatar />
+        <Avatar src={user?.photoURL} />
+        <h4>{user.displayName}</h4>
         <div className="sidebar__headerRight">
           <IconButton>
-            <Status />
+            <Status sx={{ color: "white" }} />
           </IconButton>
           <IconButton>
-            <Chats />
+            <Chats sx={{ color: "white" }} />
           </IconButton>
           <IconButton>
-            <Menu />
+            <Menu sx={{ color: "white" }} />
           </IconButton>
         </div>
       </div>
