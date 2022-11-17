@@ -26,7 +26,7 @@ function Login() {
       <div className="login_container">
         <img src={whatsapp} alt="Google" />
         <div className="login_text">
-          <h1>Sign in to WhatsApp</h1>
+          <h1>Welcome to WhatsApp</h1>
         </div>
         <Button onClick={singin}>
           Sign In With

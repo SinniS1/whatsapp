@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar/Sidebar.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/auth/Login";
 import { useStateValue } from "./StateProvider";
+import Nochat from "./components/Sidebar/Nochat.js/Nochat";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
@@ -18,7 +19,7 @@ function App() {
           <Router>
             <Sidebar />
             <Routes>
-              <Route exact path="/" element={`chose a chat room to see messages`} />
+              <Route exact path="/" element={<Nochat/>} />
               <Route exact path="/rooms/:roomId" element={<Chat />} />
             </Routes>
           </Router>

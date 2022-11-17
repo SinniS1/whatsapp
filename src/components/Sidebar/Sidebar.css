@@ -1,6 +1,6 @@
 .sidebar {
-    flex: 0.35;
-    /* border-right: 1px solid black; */
+    flex: 0.25;
+    border-right: 1px solid var(--darkBg);
     height: 94.5vh;
 }
 
@@ -9,12 +9,11 @@
     justify-content: space-between;
     padding: 23px;
     align-items: center;
-    border-right: 1px solid var(--darkBg);
     color: white;
 }
 
 .sidebar__headerRight {
-    min-width: 10vw;
+    min-width: 5vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
